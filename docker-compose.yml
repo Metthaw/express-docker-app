@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  express-app-for-test:
+    container_name: express-app-for-test
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      - DOCKER_ENV=true
+      - DB_HOST_DOCKER=express-app-test-db  # ✅ ชี้ไปที่ MySQL Container ที่มีอยู่
+      - DB_USER=root
+      - DB_PASSWORD=password
+      - DB_NAME=mydatabase
+      - DB_PORT=3306  # ✅ ใช้ 3306 เพราะเป็นพอร์ตภายใน Container
+    networks:
+      - express-network
+
+networks:
+  express-network:
