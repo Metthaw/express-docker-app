@@ -1,20 +1,20 @@
-# ใช้ Node.js เวอร์ชัน 18 เป็น base image
-FROM node:18
+# ใช้ Node.js เวอร์ชันล่าสุด
+FROM node:latest
 
-# ตั้งค่า Working Directory
+# กำหนด Working Directory
 WORKDIR /app
 
-# คัดลอก package.json และ package-lock.json ไปยัง Container
+# คัดลอกไฟล์ package.json และ package-lock.json
 COPY package*.json ./
 
 # ติดตั้ง dependencies
 RUN npm install
 
-# คัดลอกโค้ดทั้งหมดไปยัง Container
+# คัดลอกโค้ดทั้งหมดเข้าไปใน Container
 COPY . .
 
-# เปิดพอร์ต 3000 สำหรับ Express.js
-EXPOSE 3000
+# เปิดพอร์ต 3001
+EXPOSE 3001
 
-# รันเซิร์ฟเวอร์เมื่อ Container เริ่มทำงาน
+# คำสั่งรันแอป
 CMD ["node", "index.js"]

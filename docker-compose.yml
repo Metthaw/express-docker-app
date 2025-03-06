@@ -8,13 +8,40 @@ services:
       - "3001:3001"
     environment:
       - DOCKER_ENV=true
-      - DB_HOST_DOCKER=express-app-test-db  # ✅ ชี้ไปที่ MySQL Container ที่มีอยู่
+      - DB_HOST_DOCKER=express-app-test-db
       - DB_USER=root
       - DB_PASSWORD=password
       - DB_NAME=mydatabase
-      - DB_PORT=3306  # ✅ ใช้ 3306 เพราะเป็นพอร์ตภายใน Container
+      - DB_PORT=3306
+    depends_on:
+      express-app-test-db:
+        condition: service_healthy
     networks:
-      - express-network
+      - express-network  
+
+  express-app-test-db:
+    container_name: express-app-test-db
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: mydatabase
+    ports:
+      - "3306:3306"
+    networks:
+      - express-network 
+    volumes:
+      - mysql_data:/var/lib/mysql  
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
 
 networks:
   express-network:
+    driver: bridge  
+
+volumes:
+  mysql_data:  
